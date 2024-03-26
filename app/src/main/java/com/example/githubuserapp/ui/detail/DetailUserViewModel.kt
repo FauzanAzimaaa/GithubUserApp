@@ -12,7 +12,6 @@ import retrofit2.Response
 
 class DetailUserViewModel : ViewModel() {
     val user = MutableLiveData<DetailUserResponse>()
-
     fun setUserDetail(username : String){
         RetrofitClient.apiInsetance
             .getUserDetail(username)

@@ -3,12 +3,10 @@ package com.example.githubuserapp.ui.main
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.githubuserapp.R
 import com.example.githubuserapp.data.model.User
 import com.example.githubuserapp.databinding.ActivityMainBinding
 import com.example.githubuserapp.ui.detail.DetailUserActivity
@@ -44,16 +42,17 @@ class MainActivity : AppCompatActivity() {
             rvUser.setHasFixedSize(true)
             rvUser.adapter = adapter
 
-            btnSearch.setOnClickListener {
-                searchUser()
-            }
+            searchUser("ajik")
 
-            etQuery.setOnKeyListener{ v, keyCode, event ->
-                if(event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER){
-                    searchUser()
-                    return@setOnKeyListener true
-                }
-                return@setOnKeyListener false
+            with(binding) {
+                searchView.setupWithSearchBar(searchBar)
+                searchView
+                    .editText
+                    .setOnEditorActionListener { textView, actionId, event ->
+                        searchView.hide()
+                        searchUser(searchView.text.toString())
+                        false
+                    }
             }
         }
         viewModel.getSearchUsers().observe(this) {
@@ -64,9 +63,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchUser(){
+    private fun searchUser(query : String){
         binding.apply {
-            val query = etQuery.text.toString()
             if(query.isEmpty()) return
             showLoading(true)
             viewModel.setSearchUsers(query)

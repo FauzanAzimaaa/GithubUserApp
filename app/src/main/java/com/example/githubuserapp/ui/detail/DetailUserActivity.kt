@@ -2,20 +2,13 @@ package com.example.githubuserapp.ui.detail
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.example.githubuserapp.R
 import com.example.githubuserapp.databinding.ActivityDetailUserBinding
-import com.example.githubuserapp.databinding.ActivityMainBinding
-
 class DetailUserActivity : AppCompatActivity() {
-
     companion object{
         const val EXTRA_USERNAME = "extra_username"
     }
@@ -38,8 +31,10 @@ class DetailUserActivity : AppCompatActivity() {
         if (username != null) viewModel.setUserDetail(username)
 
         viewModel.getUserDetail().observe(this) {
+            showLoading(true)
             if (it != null) {
                 binding.apply {
+                    showLoading(false)
                     tvName.text = it.name
                     tvUsername.text = it.login
                     tvFollowers.text = "${it.followers} Followers"
@@ -58,5 +53,12 @@ class DetailUserActivity : AppCompatActivity() {
             viewPager.adapter = sectionsPagerAdapter
             tabs.setupWithViewPager(viewPager)
         }
+    }
+
+    private fun showLoading(state : Boolean){
+        if(state)
+            binding.progressBar.visibility = View.VISIBLE
+        else
+            binding.progressBar.visibility = View.INVISIBLE
     }
 }
